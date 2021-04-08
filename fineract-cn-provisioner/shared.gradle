@@ -1,0 +1,120 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+group 'org.apache.fineract.cn.provisioner'
+version '0.1.0-BUILD-SNAPSHOT'
+
+ext.versions = [
+        fineractidentityservice : '0.1.0-BUILD-SNAPSHOT',
+        frameworkanubis         : '0.1.0-BUILD-SNAPSHOT',
+        frameworkanput          : '0.1.0-BUILD-SNAPSHOT',
+        frameworkapi            : '0.1.0-BUILD-SNAPSHOT',
+        frameworklang           : '0.1.0-BUILD-SNAPSHOT',
+        frameworkasync          : '0.1.0-BUILD-SNAPSHOT',
+        frameworkcassandra      : '0.1.0-BUILD-SNAPSHOT',
+        frameworkmariadb        : '0.1.0-BUILD-SNAPSHOT',
+        frameworkcrypto         : '0.1.0-BUILD-SNAPSHOT',
+        frameworktest           : '0.1.0-BUILD-SNAPSHOT',
+        springcontext           : '4.3.3.RELEASE',
+        activeMQ                : '5.13.2',
+        validator               : '5.3.0.Final'
+]
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    jcenter()
+    mavenLocal()
+    maven { url 'https://mifos.jfrog.io/mifos/libs-snapshot/' }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'io.spring.platform:platform-bom:Athens-RELEASE'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR1'
+    }
+}
+
+// override certain dependency provided by Spring platform using newer releases
+ext['cassandra.version'] = '3.4'
+ext['cassandra-driver.version'] = '3.0.1'
+ext['activemq.version'] = '5.13.2'
+ext['spring-data-releasetrain.version'] = 'Gosling-SR2A'
+
+dependencies {
+    compile(
+            [group: 'com.google.code.findbugs', name: 'jsr305'],
+            [group: 'org.apache.fineract.cn', name: 'postgresql', version: '0.1.0-BUILD-SNAPSHOT'],
+            [group: 'postgresql', name: 'postgresql', version: '9.0-801.jdbc4']
+    )
+
+    testCompile(
+            [group: 'org.springframework.boot', name: 'spring-boot-starter-test']
+    )
+}
+
+jar {
+    from sourceSets.main.java
+}
+
+artifactory {
+    contextUrl = System.getenv("ARTIFACTORY_URL")
+    publish {
+        repository {
+            repoKey = project.findProperty('artifactoryRepoKey')
+            username = System.getenv("ARTIFACTORY_USER")
+            password = System.getenv("ARTIFACTORY_PASSWORD")
+        }
+
+        defaults {
+            publications ('api', 'service', 'bootService', 'componentTest')
+        }
+    }
+}
+artifactoryPublish.dependsOn('publishToMavenLocal')
+
+license {
+    header rootProject.file('../HEADER')
+    strictCheck true
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+        xml = 'XML_STYLE'
+        yml = 'SCRIPT_STYLE'
+        yaml = 'SCRIPT_STYLE'
+    }
+}
+
+rat {
+    // List of exclude directives, defaults to ['**/.gradle/**']
+    excludes = [
+            "**/*.log",
+            "**/banner.txt",
+            "**/.idea/**",
+            "**/.gradle/**",
+            "**/gradle/**",
+            "**/build/**",
+            "gradlew",
+            "gradlew.bat",
+            "README.md",
+            "**/.dockerignore/**",
+            "**/logs/**/*.log",
+            "**/banner.txt"
+    ]
+}
