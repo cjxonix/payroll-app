@@ -1,0 +1,73 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<div layout="column" layout-fill>
+  <mat-progress-bar *ngIf="isLoading$ | async" mode="indeterminate"></mat-progress-bar>
+  <mat-toolbar color="primary" class="mat-whiteframe-z1">
+    <button mat-icon-button (click)="toggleSideNav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span flex></span>
+    <mat-menu #menu="matMenu" x-position="before">
+      <button mat-menu-item [disabled]="true">
+        <mat-icon>account_circle</mat-icon>
+        <span>{{username$ | async}}</span>
+      </button>
+      <hr>
+      <button mat-menu-item (click)="goToSettings()">
+        <mat-icon>settings</mat-icon>
+        <span>{{'Settings' | translate}}</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>{{'Sign Out' | translate}}</span>
+      </button>
+    </mat-menu>
+    <span flex></span>
+    <button mat-icon-button [mat-menu-trigger-for]="menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+  </mat-toolbar>
+  <mat-sidenav-container>
+    <mat-sidenav
+      [mode]="'side'"
+      [opened]="isOpened$ | async" >
+      <mat-toolbar>
+        <div layout="column">
+          <span layout="row" layout-align="start center">
+            <span class="mat-subhead" matTooltip="{{ 'Tenant' | translate }}" matTooltipPosition="right">{{tenant$ | async}}</span>
+          </span>
+        </div>
+      </mat-toolbar>
+      <mat-nav-list>
+        <ng-container *ngFor="let menuItem of menuItems; let i = index">
+          <a mat-list-item [routerLink]="[menuItem.routerLink]" routerLinkActive="active" *hasPermission="menuItem.permission">
+            <mat-icon matListAvatar>{{menuItem.icon}}</mat-icon>
+            <h3 matLine>{{menuItem.title | translate}}</h3>
+            <p matLine>{{menuItem.description | translate}}</p>
+          </a>
+          <mat-divider *ngIf="i === 0"></mat-divider>
+        </ng-container>
+      </mat-nav-list>
+    </mat-sidenav>
+    <!-- Main content -->
+    <div layout-fill>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-container>
+  <fims-notification></fims-notification>
+</div>

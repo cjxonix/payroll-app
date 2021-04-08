@@ -1,0 +1,5014 @@
+{
+	"info": {
+		"_postman_id": "781014cc-6b5e-4104-8d81-b53725e17036",
+		"name": "Fineract-CN-Initial-Requests",
+		"description": "Collection to initialize tenant",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. Log in root user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2a49d9a1-377c-4c03-90b8-1c285140de5a",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"rootUserToken\", jsonData.token);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/auth/token?grant_type=password&client_id={{client_id}}&username={{rootUser}}&password={{rootUserPassword}}",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"auth",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "client_id",
+							"value": "{{client_id}}",
+							"description": "The initial Client Id used for starting service runner\n"
+						},
+						{
+							"key": "username",
+							"value": "{{rootUser}}",
+							"description": "Initial system user \"wepemnefret\"\n"
+						},
+						{
+							"key": "password",
+							"value": "{{rootUserPassword}}"
+						}
+					]
+				},
+				"description": "1. Get Token from System-User"
+			},
+			"response": []
+		},
+		{
+			"name": "NB! ONLY CREATE apps you have started",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/auth/token",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"auth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.01 Create identity-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fb7299ef-04d4-4869-a25b-d1b523098c6d",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"identity-v1\",\n\t\"description\": \"Identity Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{identityUrl}}/identity/v1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.02 Create rhythm-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d75f048-905b-41af-b767-4314d5e3a050",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"rhythm-v1\",\n\t\"description\": \"Customer Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{rhythmUrl}}/rhythm/v1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.03 Create office-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bc3eeb3d-961c-449b-87b9-99606d0511b3",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"office-v1\",\n\t\"description\": \"Office Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{officeUrl}}/office/v1\"\n}"
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.04 Create customer-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8adf52e4-af8a-49c8-86fc-c3174e637283",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"customer-v1\",\n\t\"description\": \"Customer Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{customerUrl}}/customer/v1\"\n}"
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.05 Create accounting-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6a24d7f4-0056-42e6-8d20-c7d3bd3dfd09",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"accounting-v1\",\n\t\"description\": \"Accounting Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{accountingUrl}}/accounting/v1\"\n}"
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.06 Create portfolio-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3efb77f8-9bc7-4835-87e8-b4ebfb7abd11",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"portfolio-v1\",\n\t\"description\": \"Portfolio\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{portfolioUrl}}/portfolio/v1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.07 Create deposit-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "870693ae-6f50-4b8e-9920-fa45e184f732",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"deposit-v1\",\n\t\"description\": \"Deposit Management Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{depositUrl}}/deposit/v1\"\n}"
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.08 Create teller-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0dbc31fb-0e82-492a-aab8-f30e1fdad5a5",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"teller-v1\",\n\t\"description\": \"Teller\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{tellerUrl}}/teller/v1\"\n}"
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.09 Create reporting-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b92b9efb-afcb-4c12-b3af-0b8ca07aaef0",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"reporting-v1\",\n\t\"description\": \"Reporting\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{reportingUrl}}/reporting/v1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.10 Create cheques-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c91e5040-28c4-4a87-9132-85c420c78efe",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"cheques-v1\",\n\t\"description\": \"Cheques\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{chequesUrl}}/cheques/v1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.11 Create payroll-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f2eb7045-4dae-4ad7-9a0c-fddc35d21436",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"payroll-v1\",\n\t\"description\": \"Payroll\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{payrollUrl}}/payroll/v1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.12 Create group-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b533921d-e3f5-45f0-b035-f1d6395b4703",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"group-v1\",\n\t\"description\": \"Group\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{groupUrl}}/group/v1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02.13 Create notifications-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cfd7c51f-0aac-4b9b-9048-c3ca60672ba0",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"notifications-v1\",\n\t\"description\": \"Notifications\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://{{notificationsUrl}}/notification/v1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03.1 Create first tenant 'playground'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0b18908b-f2d4-4ce4-a8ad-3d1c0652a1bc",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"identifier\": \"{{tenantIdentifier}}\",\n\t\"name\": \"Playground\",\n\t\"description\": \"Sample tenant for demonstrating Fineract-CN functionality\",\n\t\"cassandraConnectionInfo\": {\n\t\t\"clusterName\": \"datacenter1\",\n\t\t\"contactPoints\": \"cassandra:9042\",\n\t\t\"keyspace\": \"playground\",\n\t\t\"replicationType\": \"Simple\",\n\t\t\"replicas\": \"1\"\n\t},\n\t\"databaseConnectionInfo\": {\n\t\t\"driverClass\": \"org.postgresql.Driver\",\n\t\t\"databaseName\": \"playground\",\n\t\t\"host\": \"postgres\",\n\t\t\"port\": \"5432\",\n\t\t\"user\": \"postgres\",\n\t\t\"password\": \"postgres\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03.2 Assign identity-v1 for Tenant and obtain Tenant Admin (user antony) Password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "206c2d92-7c20-46e9-8079-ead0c0adbbe0",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"antonyUserPassword\", jsonData.adminPassword);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"identity-v1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/identityservice",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"identityservice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03.3 Login Antony (tenant superadmin) with obtained password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3b88517-d738-461b-ba9a-f57e872dfcb2",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"antonyToken\", jsonData.accessToken);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/token?grant_type=password&username={{antonyUser}}&password={{antonyUserPassword}}",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "username",
+							"value": "{{antonyUser}}"
+						},
+						{
+							"key": "password",
+							"value": "{{antonyUserPassword}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03.4 Change Antony Password to 'antonyPassword'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4a97cc02-4f7f-4a0d-b805-5ec4af08f7b0",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							"",
+							"//postman.setEnvironmentVariable(\"antonyUserPassword\", \"dDNuNG50NGRtMW4=\");",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "eaa4397b-8b4a-4032-914a-2408cf82ea4b",
+						"exec": [
+							"var CryptoJS = require(\"crypto-js\")",
+							"var rawStr = CryptoJS.enc.Utf8.parse(\"antonyUserPassword\")",
+							"var base64 = CryptoJS.enc.Base64.stringify(rawStr)",
+							"console.log(`antonyUserPassword as BASE64: ${base64}`)",
+							"postman.setEnvironmentVariable(\"antonyUserPassword\", base64);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{antonyToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{antonyUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"password\": \"{{antonyUserPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/users/antony/password",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"users",
+						"antony",
+						"password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03.5 LOGIN ANTONY (tenant SuperAdmin) with pwd 'antonyPassword'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"antonyToken\", jsonData.accessToken);",
+							"",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/token?grant_type=password&username=antony&password={{antonyUserPassword}}",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "username",
+							"value": "antony"
+						},
+						{
+							"key": "password",
+							"value": "{{antonyUserPassword}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04.01 Assign rhythm-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ba66d4b9-95a1-45de-9d59-d54308c72273",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"rhythm-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04.02 Assign office-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7f3f5ba7-5b63-4a44-b491-12e0436c1056",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"office-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04.03 Assign customer-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d5f166cb-0a4d-44e2-ab41-fde67c2d1af7",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"customer-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05.1 Create administrator role for tenant \"playground\"",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c64b529c-6e8a-4ef1-ab0d-a58b9499ade9",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							"setTimeout(function(){}, [3000]);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "User",
+						"value": "{{antonyUser}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{antonyToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"identifier\": \"administrator\",\n  \"permissions\": [\n    {\n      \"permittableEndpointGroupIdentifier\": \"accounting__v1__account\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"accounting__v1__fin_condition\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"accounting__v1__income_stmt\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"accounting__v1__journal\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"accounting__v1__ledger\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"accounting__v1__tx_types\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"catalog__v1__catalog\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"customer__v1__documents\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"customer__v1__identifications\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"customer__v1__portrait\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"customer__v1__customer\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"customer__v1__task\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"deposit__v1__instance\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"deposit__v1__definition\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"identity__v1__users\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"identity__v1__roles\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"identity__v1__self\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"office__v1__employees\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"office__v1__offices\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"office__v1__self\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"portfolio__v1__products__lossprv\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"portfolio__v1__products__enable\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"portfolio__v1__products\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"portfolio__v1__case_documents\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"portfolio__v1__case\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"teller__v1__management\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"teller__v1__operation\",\n      \"allowedOperations\": [\n        \"READ\",\n        \"CHANGE\",\n        \"DELETE\"\n      ]\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/roles",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05.2 Create Admin User operator with password 'initialPassword'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9486d316-2aca-409a-88ff-f17770249dca",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "115a549d-513d-46ef-b8af-f9be111bd55d",
+						"exec": [
+							"var CryptoJS = require(\"crypto-js\")",
+							"var rawStr = CryptoJS.enc.Utf8.parse(\"initialPassword\")",
+							"var base64 = CryptoJS.enc.Base64.stringify(rawStr)",
+							"console.log(`operatorPassword in BASE64: ${base64}`)",
+							"postman.setEnvironmentVariable(\"adminUserPassword\", base64);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{antonyToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{antonyUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"identifier\": \"operator\",\n\t\"role\": \"administrator\",\n\t\"password\": \"{{adminUserPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/users",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05.3 Log in with initial password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "90d180ba-a4a4-47ce-b018-94c75b0ebe65",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"adminUserToken\", jsonData.accessToken);",
+							"",
+							"const moment = require('moment');",
+							"var timestamp = moment().format(\"YYYY-MM-DD\") + \"T\" + moment().format(\"HH:mm:ss\");",
+							"tests[\"initial password is expired\"] = jsonData.passwordExpiration < timestamp;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0f7bafa6-8124-42cc-b0a4-9571119a5fc8",
+						"exec": [
+							"var delay3seconds = setTimeout(function(){}, [3000]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{antonyToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{antonyUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/token?grant_type=password&username=operator&password={{adminUserPassword}}",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "username",
+							"value": "operator"
+						},
+						{
+							"key": "password",
+							"value": "{{adminUserPassword}}",
+							"description": "Initial password"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05.4 Change user 'operator' password to 'operatorPassword'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "af5b9059-bf36-4715-acc2-25d272552590",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "91312a48-c2bd-4ea4-b4e6-8c388aec99e9",
+						"exec": [
+							"var CryptoJS = require(\"crypto-js\")",
+							"var rawStr = CryptoJS.enc.Utf8.parse(\"operatorPassword\")",
+							"var base64 = CryptoJS.enc.Base64.stringify(rawStr)",
+							"console.log(`operatorPassword in BASE64: ${base64}`)",
+							"postman.setEnvironmentVariable(\"adminUserPassword\", base64);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"type": "text",
+						"value": "{{adminUser}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"password\": \"{{adminUserPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/users/operator/password",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"users",
+						"operator",
+						"password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05.5 LOG IN TENANT ADMIN (operator)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c8802a96-df5a-4916-b6fb-e27b33c386e6",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"adminUserToken\", jsonData.accessToken);",
+							"",
+							"const moment = require('moment');",
+							"var timestamp = moment().format(\"YYYY-MM-DD\") + \"T\" + moment().format(\"HH:mm:ss\");",
+							"tests[\"password is not expired\"] = jsonData.passwordExpiration > timestamp;",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/token?grant_type=password&username=operator&password={{adminUserPassword}}",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "username",
+							"value": "operator"
+						},
+						{
+							"key": "password",
+							"value": "{{adminUserPassword}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05.6 Pull operator permissions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9486d316-2aca-409a-88ff-f17770249dca",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "115a549d-513d-46ef-b8af-f9be111bd55d",
+						"exec": [
+							"var CryptoJS = require(\"crypto-js\")",
+							"var rawStr = CryptoJS.enc.Utf8.parse(\"operatorPassword\")",
+							"var base64 = CryptoJS.enc.Base64.stringify(rawStr)",
+							"console.log(`operatorPassword in BASE64: ${base64}`)",
+							"postman.setEnvironmentVariable(\"adminUserPassword\", base64);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/users/operator/permissions",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"users",
+						"operator",
+						"permissions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06.1 Create Scheduler role for tenant playground",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c64b529c-6e8a-4ef1-ab0d-a58b9499ade9",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "User",
+						"value": "{{antonyUser}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{antonyToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"identifier\": \"scheduler\",\n  \"permissions\": [\n    {\n      \"permittableEndpointGroupIdentifier\": \"identity__v1__app_self\",\n      \"allowedOperations\": [\n        \"CHANGE\"\n      ]\n    },\n    {\n      \"permittableEndpointGroupIdentifier\": \"portfolio__v1__khepri\",\n      \"allowedOperations\": [\n        \"CHANGE\"\n      ]\n    }\n  ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/roles",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06.2 Create Scheduler user imhotep with password 'initialImhotepPassword'",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3469215d-1ba4-4891-aa3f-e45e343ab4de",
+						"exec": [
+							"var CryptoJS = require(\"crypto-js\")",
+							"",
+							"//Encrypt",
+							"var rawStr = CryptoJS.enc.Utf8.parse(\"initialImhotepPassword\")",
+							"var base64 = CryptoJS.enc.Base64.stringify(rawStr)",
+							"console.log(`imhotepPassword in BASE64: ${base64}`)",
+							"postman.setEnvironmentVariable(\"schedulerUserPassword\", base64);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1cad925a-87b3-4ba2-af86-a4d499d68f22",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							"setTimeout(function(){}, [3000]);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{antonyToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{antonyUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"identifier\": \"imhotep\",\n\t\"role\": \"scheduler\",\n\t\"password\": \"{{schedulerUserPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/users",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06.3 Login Scheduler user imhotep",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "272b3e2a-f1b2-41da-aa5d-9e017555d6d2",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"access token was returned \"] = jsonData.accessToken !== undefined;",
+							"",
+							"postman.setEnvironmentVariable(\"schedulerUserToken\", jsonData.accessToken);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dd4a949c-cf1e-4385-aa25-3cb53d39d56d",
+						"exec": [
+							"var delay3seconds = setTimeout(function(){}, [3000]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/token?grant_type=password&username=imhotep&password={{schedulerUserPassword}}",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "username",
+							"value": "imhotep"
+						},
+						{
+							"key": "password",
+							"value": "{{schedulerUserPassword}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06.4 Change imhotep user password to 'imhotepPassword'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "af5b9059-bf36-4715-acc2-25d272552590",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0198f255-d555-4a77-8825-04c5bbd1c54d",
+						"exec": [
+							"var CryptoJS = require(\"crypto-js\")",
+							"",
+							"//Encrypt",
+							"var rawStr = CryptoJS.enc.Utf8.parse(\"imhotepPassword\")",
+							"var base64 = CryptoJS.enc.Base64.stringify(rawStr)",
+							"console.log(`imhotepPassword in BASE64: ${base64}`)",
+							"postman.setEnvironmentVariable(\"schedulerUserPassword\", base64);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{schedulerUserToken}}",
+						"type": "text"
+					},
+					{
+						"key": "User",
+						"value": "imhotep",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"password\": \"{{schedulerUserPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/users/imhotep/password",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"users",
+						"imhotep",
+						"password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06.5 Login user imhotep (who has scheduler role)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5830a8cd-f000-4b41-bfd2-1ac8c96812e4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"schedulerUserToken\", jsonData.accessToken);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/token?grant_type=password&username=imhotep&password={{schedulerUserPassword}}",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "username",
+							"value": "imhotep"
+						},
+						{
+							"key": "password",
+							"value": "{{schedulerUserPassword}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06.6 enable permission identity__v1__app_self for imhotep",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5830a8cd-f000-4b41-bfd2-1ac8c96812e4",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "User",
+						"value": "imhotep",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{schedulerUserToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "true",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/applications/rhythm-v1/permissions/identity__v1__app_self/users/imhotep/enabled",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"applications",
+						"rhythm-v1",
+						"permissions",
+						"identity__v1__app_self",
+						"users",
+						"imhotep",
+						"enabled"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.01 Assign accounting-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "af1b9ac1-c66c-4353-b59b-ec3e1bea864c",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"accounting-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.020 Assign portfolio-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ef7b5c59-1623-4183-8196-b76e30922713",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"portfolio-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.021 WAIT FOR PORTFOLIO TO PROVISION (~1min)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ef7b5c59-1623-4183-8196-b76e30922713",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "OPTIONS",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{portfolioUrl}}/portfolio/v1/",
+					"protocol": "http",
+					"host": [
+						"{{portfolioUrl}}"
+					],
+					"path": [
+						"portfolio",
+						"v1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.022 enable permission portfolio__v1__khepri for user imhotep",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5830a8cd-f000-4b41-bfd2-1ac8c96812e4",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "User",
+						"value": "imhotep",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{schedulerUserToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "true",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/applications/rhythm-v1/permissions/portfolio__v1__khepri/users/imhotep/enabled",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"applications",
+						"rhythm-v1",
+						"permissions",
+						"portfolio__v1__khepri",
+						"users",
+						"imhotep",
+						"enabled"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ONLY ASSIGN apps you have started",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.03 Assign deposits for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8b4e42c3-5a2f-437d-8f2c-55a6d398f601",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"deposit-v1\"\n\t}\n]"
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.04 Assign teller-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "99d87103-9033-4dc9-aaef-b82aef6f8e3a",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"teller-v1\"\n\t}\n]"
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.05 Assign reporting-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c31e05-7498-46c9-8063-7987327fa1fa",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"reporting-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.06 Assign cheques-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e696bb1f-9582-4861-9009-2b9ede155c3b",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"cheques-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.08 Assign payroll-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1a0f8ef5-a7a1-47d4-b83c-92a7b7e4ffcb",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"payroll-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.09 Assign group-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "32caff55-23cb-498a-b17c-0444894662ad",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"group-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.10 Assign notifications-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f755efce-b652-48f8-aefb-4cee875df904",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"name\": \"notifications-v1\"\n\t}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.99 List tenant applications (Only returning one is a bug)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
+					"protocol": "http",
+					"host": [
+						"{{provisionerUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"v1",
+						"tenants",
+						"{{tenantIdentifier}}",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08.1 Create REVENUE ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6260a2d4-def6-40e4-a87e-38f3d01f16b3",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"REVENUE\",\n  \"identifier\": \"1000\",\n  \"name\": \"Income\",\n  \"subLedgers\": [\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1100\",\n      \"name\": \"Income from Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1200\",\n      \"name\": \"Investment Income\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1300\",\n      \"name\": \"Fees and Charges\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1400\",\n      \"name\": \"Gain (Loss) on Sale of Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1500\",\n      \"name\": \"Miscellaneous Income\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1600\",\n      \"name\": \"Service Income on Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1700\",\n      \"name\": \"Trading Profits & Losses\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    }\n  ],\n  \"showAccountsInChart\": true\n}\n\n"
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/ledgers",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"ledgers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08.2 Create EXPENSE Ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "be1a9019-cb18-4084-802b-cc6169e0b091",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"EXPENSE\",\n  \"identifier\": \"2000\",\n  \"name\": \"Expenses\",\n  \"showAccountsInChart\": true,\n  \"subLedgers\": [\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2100\",  \"name\": \"Employee Compensation\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2200\",  \"name\": \"Employee Benefits\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2300\",  \"name\": \"Travel and Conference Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2400\",  \"name\": \"Association Dues\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2500\",  \"name\": \"Office Occupancy Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2600\",  \"name\": \"Office Operations Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2700\",  \"name\": \"Educational and Promotional Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2800\",  \"name\": \"Loan Servicing Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2900\",  \"name\": \"Professional and Outside Services\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3000\",  \"name\": \"Provision for Loan Losses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3100\",  \"name\": \"Member Insurance\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3220\",  \"name\": \"Federal Operating Fee\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3300\",  \"name\": \"Cash Over and Short\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3400\",  \"name\": \"Interest on Borrowed Money\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3550\",  \"name\": \"Annual Meeting Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3700\",  \"name\": \"Miscellaneous Operating Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3800\",  \"name\": \"Interest (Dividend) Expense\", \"subLedgers\": [], \"showAccountsInChart\": true }\n  ]\n}\n"
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/ledgers",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"ledgers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08.3 Create ASSETS ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3585bd0e-9598-43e6-b678-645bd64855dd",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"ASSET\",\n  \"identifier\": \"7000\",\n  \"name\": \"Assets\",\n  \"showAccountsInChart\": true,\n  \"subLedgers\": [\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7010\",\n      \"name\": \"Loans to Members\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7020\",\n      \"name\": \"Lines of Credit to Members\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7030\",\n      \"name\": \"Real Estate Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7100\",\n      \"name\": \"Other Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7200\",\n      \"name\": \"Other Receivables\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7300\",\n      \"name\": \"Cash Accounts\",\n      \"subLedgers\": [\n        {\n          \"description\": null,\n          \"type\": \"ASSET\",\n          \"identifier\": \"7310\",\n          \"name\": \"Bank account one\",\n          \"subLedgers\": [],\n          \"showAccountsInChart\": true\n        },\n        {\n          \"description\": null,\n          \"type\": \"ASSET\",\n          \"identifier\": \"7311\",\n          \"name\": \"Bank account two\",\n          \"subLedgers\": [],\n          \"showAccountsInChart\": true\n        },\n        {\n          \"description\": null,\n          \"type\": \"ASSET\",\n          \"identifier\": \"7350\",\n          \"name\": \"Change Fund\",\n          \"subLedgers\": [],\n          \"showAccountsInChart\": true\n        }\n      ],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7400\",\n      \"name\": \"Investments\",\n      \"subLedgers\": [\n        {\n          \"description\": null,\n          \"type\": \"ASSET\",\n          \"identifier\": \"7420\",\n          \"name\": \"Federal Agency Securities\",\n          \"subLedgers\": [],\n          \"showAccountsInChart\": true\n        }\n      ],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7500\",\n      \"name\": \"Investments—Investment Allowance\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7600\",\n      \"name\": \"Prepaid Expenses and Deferred Charges\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7700\",\n      \"name\": \"Fixed Assets\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7800\",\n      \"name\": \"Accrued Income\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7900\",\n      \"name\": \"Other Assets\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    }\n  ]\n}\n"
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/ledgers",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"ledgers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08.4 Create LIABILITY ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "708e63ea-73ac-4c20-a92d-915fba3135f6",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"LIABILITY\",\n  \"identifier\": \"8000\",\n  \"name\": \"Accounts Payable\",\n  \"showAccountsInChart\": true,\n  \"subLedgers\": [\n    {\n      \"description\": null,\n      \"type\": \"LIABILITY\",\n      \"identifier\": \"8100\",\n      \"name\": \"Accounts Payable\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"LIABILITY\",\n      \"identifier\": \"8200\",\n      \"name\": \"Interest Payable\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"LIABILITY\",\n      \"identifier\": \"8400\",\n      \"name\": \"Taxes Payable\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"LIABILITY\",\n      \"identifier\": \"8500\",\n      \"name\": \"Accrued Expenses\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    }\n  ]\n}\n\n"
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/ledgers",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"ledgers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08.5 Create EQUITY ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e240003c-12d2-492c-bf43-970ed16564d5",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"EQUITY\",\n  \"identifier\": \"9000\",\n  \"name\": \"Equity\",\n  \"showAccountsInChart\": true,\n  \"subLedgers\": [\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9100\",\n      \"name\": \"Member Savings\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9300\",\n      \"name\": \"Reserves\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9400\",\n      \"name\": \"Undivided Earnings\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9550\",\n      \"name\": \"Donated Equity\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9560\",\n      \"name\": \"Net Income (Loss)\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    }\n  ]\n}\n"
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/ledgers",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"ledgers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NB! Readme has instructions how to run next step",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08.6 Create accounts (user Runner and import accounts_with_type.csv)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eef05538-e99a-4715-9ee2-1620a4ec4adc",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}",
+						"type": "text"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"balance\": \"200\",\n    \"identifier\": \"{{identifier}}\",\n    \"ledger\": \"{{parentIdentifier}}\",\n    \"name\": \"{{name}}\",\n    \"type\": \"{{type}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/accounts",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08.7 Verify that accounts are configured",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "edd32edb-8011-4f68-a1f1-adb2503f71ce",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"There are 84 accounts\"] =  jsonData.totalElements === 84;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/accounts?size=200",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"accounts"
+					],
+					"query": [
+						{
+							"key": "size",
+							"value": "200"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09.10 Create member1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4e26fc95-4fad-4972-ac80-528581c28fcc",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n            \"identifier\": \"member1\",\n            \"type\": \"PERSON\",\n            \"givenName\": \"First Name\",\n            \"middleName\": null,\n            \"surname\": \"LastnameMember1\",\n            \"dateOfBirth\": {\n                \"year\": 1922,\n                \"month\": 2,\n                \"day\": 22\n            },\n            \"address\": {\n            \t\"street\": \"ABC Street\",\n            \t\"region\": \"Nord\",\n            \t\"city\": \"Berlin\",\n            \t\"countryCode\": \"DE\",\n            \t\"country\": \"Germany\"\n            },\n            \"member\": true,\n            \"accountBeneficiary\": null,\n            \"referenceCustomer\": null,\n            \"assignedOffice\": null,\n            \"assignedEmployee\": null,\n            \"contactDetails\": null,\n            \"currentState\": \"PENDING\",\n            \"applicationDate\": \"2019-09-15\",\n            \"customValues\": null\n        }"
+				},
+				"url": {
+					"raw": "http://{{customerUrl}}/customer/v1/customers",
+					"protocol": "http",
+					"host": [
+						"{{customerUrl}}"
+					],
+					"path": [
+						"customer",
+						"v1",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09.11 Activate member1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "abfdbef2-9b97-44db-94e2-0f30adb65173",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"action\": \"ACTIVATE\"\n}"
+				},
+				"url": {
+					"raw": "http://{{customerUrl}}/customer/v1/customers/member1/commands",
+					"protocol": "http",
+					"host": [
+						"{{customerUrl}}"
+					],
+					"path": [
+						"customer",
+						"v1",
+						"customers",
+						"member1",
+						"commands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09.20 Create customer10",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d572df48-1555-41c8-839e-fa7e9dc0afcc",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n            \"identifier\": \"customer10\",\n            \"type\": \"PERSON\",\n            \"givenName\": \"First Name\",\n            \"middleName\": null,\n            \"surname\": \"LastnameCustomer10\",\n            \"dateOfBirth\": {\n                \"year\": 1922,\n                \"month\": 2,\n                \"day\": 22\n            },\n            \"address\": {\n            \t\"street\": \"ABC Street\",\n            \t\"region\": \"Nord\",\n            \t\"city\": \"Berlin\",\n            \t\"countryCode\": \"DE\",\n            \t\"country\": \"Germany\"\n            },\n            \"member\": false,\n            \"accountBeneficiary\": null,\n            \"referenceCustomer\": null,\n            \"assignedOffice\": null,\n            \"assignedEmployee\": null,\n            \"contactDetails\": null,\n            \"currentState\": \"PENDING\",\n            \"applicationDate\": \"2019-09-15\",\n            \"customValues\": null\n        }"
+				},
+				"url": {
+					"raw": "http://{{customerUrl}}/customer/v1/customers",
+					"protocol": "http",
+					"host": [
+						"{{customerUrl}}"
+					],
+					"path": [
+						"customer",
+						"v1",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09.21 Activate customer10",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "afa41cb7-93c9-46d8-8c60-471ae8642097",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"action\": \"ACTIVATE\"\n}"
+				},
+				"url": {
+					"raw": "http://{{customerUrl}}/customer/v1/customers/customer10/commands",
+					"protocol": "http",
+					"host": [
+						"{{customerUrl}}"
+					],
+					"path": [
+						"customer",
+						"v1",
+						"customers",
+						"customer10",
+						"commands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10.10 Create savingsProduct004",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "854f50a3-980b-4450-b8a0-c1333d3beeac",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"identifier\": \"savingsProduct004\",\n  \"type\": \"SAVINGS\",\n  \"name\": \"Savings Product 004\",\n  \"description\": null,\n  \"minimumBalance\": 1,\n  \"interest\": 0.01,\n  \"flexible\": true,\n  \"term\": {\n    \"period\": \"1\",\n    \"timeUnit\": \"YEAR\",\n    \"interestPayable\": \"MATURITY\"\n  },\n  \"currency\": {\n    \"code\": \"EUR\",\n    \"name\": \"Euro\",\n    \"sign\": \"€\",\n    \"scale\": 2\n  },\n  \"charges\": [],\n  \"expenseAccountIdentifier\": \"3820\",\n  \"equityLedgerIdentifier\": \"9300\",\n  \"cashAccountIdentifier\": \"7011\",\n  \"accrueAccountIdentifier\": \"8530\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/definitions",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"definitions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10.11 Activate savingsProduct004",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0ed6c3d-07f1-48e1-b9e6-f0423ae0c5e4",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"action\": \"ACTIVATE\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/definitions/savingsProduct004/commands",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"definitions",
+						"savingsProduct004",
+						"commands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10.20 Assign savingsProduct004 to customer10",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"productIdentifier\": \"savingsProduct004\",\n  \"beneficiaries\": [\n    \"customer10\"\n  ],\n  \"customerIdentifier\": \"customer10\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.21 Assign savingsProduct004 to member1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"productIdentifier\": \"savingsProduct004\",\n  \"beneficiaries\": [\n    \"member1\"\n  ],\n  \"customerIdentifier\": \"member1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10.30 Create checkingProduct108",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "35f0c037-cbfc-4ffc-b6c7-9c9846cc4018",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"identifier\": \"checkingProduct108\",\n  \"type\": \"CHECKING\",\n  \"name\": \"checking Product 108\",\n  \"description\": null,\n  \"minimumBalance\": 0,\n  \"interest\": 0,\n  \"flexible\": true,\n  \"term\": {\n    \"period\": \"2\",\n    \"timeUnit\": \"YEAR\",\n    \"interestPayable\": \"ANNUALLY\"\n  },\n  \"currency\": {\n    \"code\": \"EUR\",\n    \"name\": \"Euro\",\n    \"sign\": \"€\",\n    \"scale\": 2\n  },\n  \"charges\": [],\n  \"expenseAccountIdentifier\": \"2820\",\n  \"equityLedgerIdentifier\": \"9300\",\n  \"cashAccountIdentifier\": \"7012\",\n  \"accrueAccountIdentifier\": \"8203\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/definitions",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"definitions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10.31 Activate checkingProduct108",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9023188b-2b14-4403-aa1f-fc324dc26b9b",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"action\": \"ACTIVATE\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/definitions/checkingProduct108/commands",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"definitions",
+						"checkingProduct108",
+						"commands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10.41 Assign checkingProduct108 to customer10",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"productIdentifier\": \"checkingProduct108\",\n  \"beneficiaries\": [\n    \"customer10\"\n  ],\n  \"customerIdentifier\": \"customer10\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10.42 Assign checkingProduct108 to member1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"productIdentifier\": \"checkingProduct108\",\n  \"beneficiaries\": [\n    \"member1\"\n  ],\n  \"customerIdentifier\": \"member1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.3 Get customer10 product instances",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances?customer=customer10",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances"
+					],
+					"query": [
+						{
+							"key": "customer",
+							"value": "customer10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.4 Activate customer10 savings product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances/customer10.9300.00001?command=ACTIVATE",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances",
+						"customer10.9300.00001"
+					],
+					"query": [
+						{
+							"key": "command",
+							"value": "ACTIVATE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.5 Activate customer10 checking product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances/customer10.9300.00002?command=ACTIVATE",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances",
+						"customer10.9300.00002"
+					],
+					"query": [
+						{
+							"key": "command",
+							"value": "ACTIVATE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.6 Get customer10 product instances again",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances?customer=customer10",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances"
+					],
+					"query": [
+						{
+							"key": "customer",
+							"value": "customer10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.7 Get customer10 possible transaction types",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances/transactiontypes?customer=customer10",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances",
+						"transactiontypes"
+					],
+					"query": [
+						{
+							"key": "customer",
+							"value": "customer10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.8 Get member1 product instances",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances?customer=member1",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances"
+					],
+					"query": [
+						{
+							"key": "customer",
+							"value": "member1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.90 Activate member1 savings product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances/member1.9300.00001?command=ACTIVATE",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances",
+						"member1.9300.00001"
+					],
+					"query": [
+						{
+							"key": "command",
+							"value": "ACTIVATE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.91 Activate member1 checking product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances/member1.9300.00002?command=ACTIVATE",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances",
+						"member1.9300.00002"
+					],
+					"query": [
+						{
+							"key": "command",
+							"value": "ACTIVATE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.93. Get member1 products",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances?customer=member1",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances"
+					],
+					"query": [
+						{
+							"key": "customer",
+							"value": "member1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12.1 create HQ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8824daa3-c0b2-4afe-9296-726bd33fb7a1",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"identifier\": \"ourHQ\",\n  \"name\": \"Our headquarter\",\n  \"description\": null,\n  \"address\": {\n    \"street\": \"Street\",\n    \"city\": \"City\",\n    \"postalCode\": null,\n    \"region\": null,\n    \"country\": \"Germany\",\n    \"countryCode\": \"DE\"\n  }\n}"
+				},
+				"url": {
+					"raw": "http://{{officeUrl}}/office/v1/offices",
+					"protocol": "http",
+					"host": [
+						"{{officeUrl}}"
+					],
+					"path": [
+						"office",
+						"v1",
+						"offices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12.2. create branch",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "67d85fff-6c6d-476d-9f71-36247ee2bc40",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"identifier\": \"branch01\",\n  \"name\": \"Branch 14\",\n  \"description\": null,\n  \"address\": {\n    \"street\": \"Hohenzollernstraße\",\n    \"city\": \"München\",\n    \"postalCode\": null,\n    \"region\": null,\n    \"country\": \"Germany\",\n    \"countryCode\": \"DE\"\n  },\n  \"parentIdentifier\": \"ourHQ\"\n}"
+				},
+				"url": {
+					"raw": "http:/{{officeUrl}}/office/v1/offices/ourHQ",
+					"host": [
+						"http:"
+					],
+					"port": "",
+					"path": [
+						"{{officeUrl}}",
+						"office",
+						"v1",
+						"offices",
+						"ourHQ"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12.3. create branch office",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c7796fc7-df25-4206-a73c-5eb058e90cb0",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"identifier\": \"office001\",\n  \"name\": \"Office 001 of branch01\",\n  \"description\": null,\n  \"address\": {\n    \"street\": \"Max-Planck-Straße 1\",\n    \"city\": \"München\",\n    \"postalCode\": null,\n    \"region\": null,\n    \"country\": \"Germany\",\n    \"countryCode\": \"DE\"\n  },\n  \"parentIdentifier\": \"branch01\"\n}"
+				},
+				"url": {
+					"raw": "http://{{officeUrl}}/office/v1/offices/branch01",
+					"protocol": "http",
+					"host": [
+						"{{officeUrl}}"
+					],
+					"path": [
+						"office",
+						"v1",
+						"offices",
+						"branch01"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12.40. create employee Peter",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"identifier\": \"peter\",\n  \"givenName\": \"Peter\",\n  \"middleName\": null,\n  \"surname\": \"Gibbons\",\n  \"contactDetails\": [\n    {\n      \"group\": \"BUSINESS\",\n      \"type\": \"EMAIL\",\n      \"value\": \"peter@example.com\",\n      \"preferenceLevel\": 1\n    }\n  ],\n  \"assignedOffice\": \"office001\"\n}"
+				},
+				"url": {
+					"raw": "http://{{officeUrl}}/office/v1/employees",
+					"protocol": "http",
+					"host": [
+						"{{officeUrl}}"
+					],
+					"path": [
+						"office",
+						"v1",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12.41 create employee Samir",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"identifier\": \"samir\",\n  \"givenName\": \"Samir\",\n  \"middleName\": null,\n  \"surname\": \"Nagheenanajar\",\n  \"contactDetails\": [\n    {\n      \"group\": \"BUSINESS\",\n      \"type\": \"EMAIL\",\n      \"value\": \"samir@example.com\",\n      \"preferenceLevel\": 1\n    }\n  ],\n  \"assignedOffice\": \"office001\"\n}"
+				},
+				"url": {
+					"raw": "http://{{officeUrl}}/office/v1/employees",
+					"protocol": "http",
+					"host": [
+						"{{officeUrl}}"
+					],
+					"path": [
+						"office",
+						"v1",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12.50. create teller1 to office001",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ae00c4f4-e095-44bc-98ed-6f0a664a8439",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"code\": \"teller1\",\n  \"password\": \"teller1Password\",\n  \"cashdrawLimit\": \"1000\",\n  \"tellerAccountIdentifier\": \"7013\",\n  \"vaultAccountIdentifier\": \"7014\",\n  \"chequesReceivableAccount\": \"7011\",\n  \"cashOverShortAccount\": \"3190\",\n  \"denominationRequired\": false\n}"
+				},
+				"url": {
+					"raw": "http://{{tellerUrl}}/teller/v1/offices/office001/teller",
+					"protocol": "http",
+					"host": [
+						"{{tellerUrl}}"
+					],
+					"path": [
+						"teller",
+						"v1",
+						"offices",
+						"office001",
+						"teller"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12.51 create teller2 to office001",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ae00c4f4-e095-44bc-98ed-6f0a664a8439",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"code\": \"teller2\",\n  \"password\": \"teller2Password\",\n  \"cashdrawLimit\": \"1000\",\n  \"tellerAccountIdentifier\": \"7013\",\n  \"vaultAccountIdentifier\": \"7014\",\n  \"chequesReceivableAccount\": \"7011\",\n  \"cashOverShortAccount\": \"3190\",\n  \"denominationRequired\": false\n}"
+				},
+				"url": {
+					"raw": "http://{{tellerUrl}}/teller/v1/offices/office001/teller",
+					"protocol": "http",
+					"host": [
+						"{{tellerUrl}}"
+					],
+					"path": [
+						"teller",
+						"v1",
+						"offices",
+						"office001",
+						"teller"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12.60 open teller1 and connect with Peter",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ae00c4f4-e095-44bc-98ed-6f0a664a8439",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"action\": \"OPEN\",\n  \"assignedEmployeeIdentifier\": \"peter\",\n  \"adjustment\": \"DEBIT\",\n  \"amount\": \"5000\"\n}"
+				},
+				"url": {
+					"raw": "http://{{tellerUrl}}/teller/v1/offices/office001/teller/teller1/commands",
+					"protocol": "http",
+					"host": [
+						"{{tellerUrl}}"
+					],
+					"path": [
+						"teller",
+						"v1",
+						"offices",
+						"office001",
+						"teller",
+						"teller1",
+						"commands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12.61 open teller2 and connect with Samir",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ae00c4f4-e095-44bc-98ed-6f0a664a8439",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"action\": \"OPEN\",\n  \"assignedEmployeeIdentifier\": \"samir\",\n  \"adjustment\": \"DEBIT\",\n  \"amount\": \"3000\"\n}"
+				},
+				"url": {
+					"raw": "http://{{tellerUrl}}/teller/v1/offices/office001/teller/teller2/commands",
+					"protocol": "http",
+					"host": [
+						"{{tellerUrl}}"
+					],
+					"path": [
+						"teller",
+						"v1",
+						"offices",
+						"office001",
+						"teller",
+						"teller2",
+						"commands"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

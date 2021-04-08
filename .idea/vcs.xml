@@ -4,6 +4,7 @@
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ProvisioningFineractCN" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/fineract-cn-customer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/fineract-cn-fims-web-app" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/fineract-cn-identity" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/fineract-cn-office" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/fineract-cn-payroll" vcs="Git" />

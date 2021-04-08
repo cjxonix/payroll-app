@@ -1,0 +1,603 @@
+version: '3'
+services:
+  provisioner-ms:
+    image: apache/fineract-cn-provisioner:latest
+    ports:
+      - "2020:2020"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      bonecp.acquireIncrement: 1
+      bonecp.maxConnectionsPerPartition: 4
+      bonecp.minConnectionsPerPartition: 1
+      bonecp.partitionCount: 1
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.cluster.pwd: ${CASSANDRA_CLUSTER_PASSWORD}
+      cassandra.cluster.user: ${CASSANDRA_CLUSTER_USER}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      cassandra.keyspace: ${CASSANDRA_KEYSPACE}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: provisioner-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.database: seshat
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2020
+      spring.application.name: provisioner-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.initialclientid: ${SYSTEM_INITIAL_CLIENT_ID}
+      system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
+      system.privateKey.modulus: ${PRIVATE_KEY_MODULUS}
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 3
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${PROVISIONER_IP}
+
+  identity-ms:
+    image: apache/fineract-cn-identity:latest
+    ports:
+      - "2021:2021"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.cluster.pwd: ${CASSANDRA_CLUSTER_PASSWORD}
+      cassandra.cluster.user: ${CASSANDRA_CLUSTER_USER}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      cassandra.keyspace: ${CASSANDRA_KEYSPACE}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: identity-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      identity.token.refresh.secureCookie: "false"
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2021
+      spring.application.name: identity-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 3
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${IDENTITY_IP}
+
+  rhythm-ms:
+    image: apache/fineract-cn-rhythm:latest
+    ports:
+      - "2022:2022"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      bonecp.acquireIncrement: 1
+      bonecp.maxConnectionsPerPartition: 4
+      bonecp.minConnectionsPerPartition: 1
+      bonecp.partitionCount: 1
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.cluster.pwd: password
+      cassandra.cluster.user: cassandra
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      cassandra.keyspace: ${CASSANDRA_KEYSPACE}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: rhythm-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.database: seshat
+      postgresql.host: ${POSTGRESQL_HOST}
+      postgresql.password: postgres
+      postgresql.port: 5432
+      postgresql.user: postgres
+      rhythm.beatCheckRate: 600000
+      rhythm.user: ${SCHEDULER_USER_NAME}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2022
+      spring.application.name: rhythm-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${RHYTHM_IP}
+
+  office-ms:
+    image: apache/fineract-cn-office:latest
+    ports:
+      - "2023:2023"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      bonecp.acquireIncrement: 1
+      bonecp.maxConnectionsPerPartition: 4
+      bonecp.minConnectionsPerPartition: 1
+      bonecp.partitionCount: 1
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.cluster.pwd: password
+      cassandra.cluster.user: cassandra
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      cassandra.keyspace: ${CASSANDRA_KEYSPACE}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: office-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.database: seshat
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2023
+      spring.application.name: office-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
+      system.privateKey.modulus: ${PRIVATE_KEY_MODULUS}
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${OFFICE_IP}
+
+  customer-ms:
+    image: apache/fineract-cn-customer:latest
+    ports:
+      - "2024:2024"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      bonecp.acquireIncrement: 1
+      bonecp.maxConnectionsPerPartition: 4
+      bonecp.minConnectionsPerPartition: 1
+      bonecp.partitionCount: 1
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.cluster.pwd: password
+      cassandra.cluster.user: cassandra
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      cassandra.keyspace: ${CASSANDRA_KEYSPACE}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: customer-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2024
+      spring.application.name: customer-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${CUSTOMER_IP}
+
+  accounting-ms:
+    ports:
+      - "2025:2025"
+    image: apache/fineract-cn-accounting:latest
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      bonecp.acquireIncrement: 1
+      bonecp.maxConnectionsPerPartition: 4
+      bonecp.minConnectionsPerPartition: 1
+      bonecp.partitionCount: 1
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.cluster.pwd: password
+      cassandra.cluster.user: cassandra
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      cassandra.keyspace: ${CASSANDRA_KEYSPACE}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: accounting-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.database: seshat
+      postgresql.host: ${POSTGRESQL_HOST}
+      postgresql.password: postgres
+      postgresql.port: 5432
+      postgresql.user: postgres
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2025
+      spring.application.name: accounting-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${ACCOUNTING_IP}
+
+  portfolio-ms:
+    image: apache/fineract-cn-portfolio:latest
+    ports:
+      - "2026:2026"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      bonecp.acquireIncrement: 1
+      bonecp.maxConnectionsPerPartition: 4
+      bonecp.minConnectionsPerPartition: 1
+      bonecp.partitionCount: 1
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.cluster.pwd: password
+      cassandra.cluster.user: cassandra
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      cassandra.keyspace: ${CASSANDRA_KEYSPACE}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: portfolio-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      portfolio.bookLateFeesAndInterestAsUser: imhotep
+      postgresql.database: seshat
+      postgresql.host: ${POSTGRESQL_HOST}
+      postgresql.password: postgres
+      postgresql.port: 5432
+      postgresql.user: postgres
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2026
+      spring.application.name: portfolio-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${PORTFOLIO_IP}
+
+  deposit-ms:
+    image: apache/fineract-cn-deposit-account-management:latest
+    ports:
+      - "2027:2027"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.cluster.pwd: ${CASSANDRA_CLUSTER_PASSWORD}
+      cassandra.cluster.user: ${CASSANDRA_CLUSTER_USER}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      cassandra.keyspace: ${CASSANDRA_KEYSPACE}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: deposit-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2027
+      spring.application.name: deposit-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${DEPOSIT_ACCOUNT_MANAGEMENT_IP}
+        aliases:
+          - deposit-account-management-ms
+
+  teller-ms:
+    image: apache/fineract-cn-teller:latest
+    ports:
+      - "2028:2028"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.cluster.pwd: ${CASSANDRA_CLUSTER_PASSWORD}
+      cassandra.cluster.user: ${CASSANDRA_CLUSTER_USER}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      cassandra.keyspace: ${CASSANDRA_KEYSPACE}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: teller-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2028
+      spring.application.name: teller-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${TELLER_IP}
+
+  reporting-ms:
+    image: apache/fineract-cn-reporting:latest
+    ports:
+      - "2029:2029"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: reporting-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2029
+      spring.application.name: reporting-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${REPORTING_IP}
+
+  cheques-ms:
+    image: apache/fineract-cn-cheques:latest
+    ports:
+      - "2030:2030"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: cheques-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2030
+      spring.application.name: cheques-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${CHEQUES_IP}
+
+  payroll-ms:
+    image: apache/fineract-cn-payroll:latest
+    ports:
+      - "2031:2031"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: payroll-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2031
+      spring.application.name: payroll-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${PAYROLL_IP}
+
+  group-ms:
+    image: apache/fineract-cn-group:latest
+    ports:
+      - "2032:2032"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: group-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2032
+      spring.application.name: group-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${GROUP_IP}
+
+  notifications-ms:
+    image: apache/fineract-cn-notifications:latest
+    ports:
+      - "2033:2033"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cl.delete: ONE
+      cassandra.cl.read: ONE
+      cassandra.cl.write: ONE
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.fetchRegistry: "true"
+      eureka.client.initialInstanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INITIALINSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.instanceInfoReplicationIntervalSeconds: ${EUREKA_CLIENT_INSTANCEINFOREPLICATIONINTERVALSECONDS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: notifications-ms
+      eureka.instance.leaseRenewalIntervalInSeconds: ${EUREKA_INSTANCE_LEASERENEWALINTERVALINSECONDS}
+      eureka.registration.enabled: "true"
+      feign.hystrix.enabled: "false"
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.eureka.enabled: "true"
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2033
+      spring.application.name: notifications-v1
+      spring.cloud.config.enabled: "false"
+      spring.cloud.discovery.enabled: "true"
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${NOTIFICATIONS_IP}
+
+  fims-web-app:
+    image: apache/fineract-cn-fims-web-app:latest
+    ports:
+      - "8888:8888"
+    networks:
+      external_tools_default:
+      fineract:
+        ipv4_address: ${FIMS_WEB_APP_IP}
+
+networks:
+  external_tools_default:
+    external:
+      name: external_tools_default
+  fineract:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.0/26
